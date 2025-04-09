@@ -56,7 +56,9 @@
         "sail-up": [
             "Composer\\Config::disableProcessTimeout",
             "./vendor/bin/sail up -d",
-            "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"./vendor/bin/sail artisan serve\" \"./vendor/bin/sail artisan queue:listen --tries=1\" \"php artisan pail --timeout=0\" \"./vendor/bin/sail npm run dev\" --names=server,queue,logs,vite"
+            "./vendor/bin/sail artisan migrate --force",
+            "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"./vendor/bin/sail artisan serve\" \"./vendor/bin/sail artisan queue:listen --tries=1\" \"php artisan pail --timeout=0\" \"./vendor/bin/sail npm run dev\" --names=server,queue,logs,vite",
+            "composer run sail-down"
         ],
         "sail-down": [
             "./vendor/bin/sail down"
