@@ -1,8 +1,9 @@
-export default function Index() {
+import UserTable from '@/components/ui/user-table';
 
+export default function Index() {
     return (
-        <div className={`flex justify-center items-center py-36`}>
-            <p>User table here!</p>
+        <div className={`flex items-center justify-center py-36`}>
+            <UserTable />
         </div>
     );
 }
