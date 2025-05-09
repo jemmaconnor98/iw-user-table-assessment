@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class UserController extends Controller 
 {
@@ -27,11 +28,13 @@ class UserController extends Controller
 
     $users = $query->paginate($perPage);
 
-    return response()->json([
-      'users' => $users->items(),
-      'totalCount' => $users->total(),
-      'currentPage' => $users->currentPage(),
-      'lastPage' => $users->lastPage(),
+    return Inertia::render('index', [
+      'userData' => [
+        'users' => $users->items(),
+        'totalCount' => $users->total(),
+        'currentPage' => $users->currentPage(),
+        'lastPage' => $users->lastPage(),
+      ]
     ]);
   }
 }

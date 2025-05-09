@@ -20,12 +20,21 @@ import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { useInitials } from '@/hooks/use-initials';
 import { User } from '@/types';
+import { router } from '@inertiajs/react';
 
 interface Column {
   id: keyof Omit<User, 'id'>;
   label: string;
   minWidth?: number;
   align?: 'right' | 'left' | 'center';
+}
+interface UserTableProps {
+  initialData: {
+    users: User[];
+    totalCount: number;
+    currentPage: number;
+    lastPage: number;
+  };
 }
 
 const columns: readonly Column[] = [
@@ -35,24 +44,29 @@ const columns: readonly Column[] = [
   { id: 'email_verified_at', label: 'Verification Status', minWidth: 210, align: 'center'},
 ];
 
-const UserTable: React.FC = () => {
-  const [users, setUsers] = useState<User[]>([]);
-  const [total, setTotal] = useState(0);
-  const [page, setPage] = useState(0);
+const UserTable: React.FC<UserTableProps> = ({ initialData }) => {
+  const [page, setPage] = useState(initialData.currentPage - 1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [sortColumn, setSortColumn] = useState<keyof User | null>(null);
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
   const [search, setSearch] = useState('');
   const getInitials = useInitials();
 
-  useEffect(() => {
-    fetch(`/users?page=${page + 1}&per_page=${rowsPerPage}&search=${search}&sort_column=${sortColumn}&sort_direction=${sortDirection}`)
-      .then((res) => res.json())
-      .then((data) => {
-        setUsers(data.users);
-        setTotal(data.totalCount);
-      });
-  }, [page, rowsPerPage, search, sortColumn, sortDirection]);
+  const users = initialData.users;
+  const total = initialData.totalCount;
+
+useEffect(() => {
+  router.get('/', {
+    page: page + 1,
+    per_page: rowsPerPage,
+    search,
+    sort_column: sortColumn,
+    sort_direction: sortDirection,
+  }, {
+    preserveState: true,
+    replace: true,
+  });
+}, [page, rowsPerPage, search, sortColumn, sortDirection]);
 
   const handleSort = (column: keyof User) => {
     if (sortColumn === column) {
